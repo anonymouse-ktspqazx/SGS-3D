@@ -1,0 +1,86 @@
+foundation_model:
+  # Grounding DINO
+  grounded_config_file: './segmenter2d/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py'
+  grounded_checkpoint: './pretrained_models/groundingdino_swint_ogc.pth'
+
+  # Segment Anything Model
+  sam_checkpoint: './pretrained_models/sam_vit_h_4b8939.pth'
+
+  # CLIP
+  clip_model: 'ViT-L/14@336px'
+  device: 'cuda'
+  clip_dim: 768
+
+  # Detection thresholds
+  box_threshold: 0.4
+  text_threshold: 0.25
+  confidence_threshold: 0.1
+
+segmenter2d:
+  model: 'GroundingDINO-SAM'  # Grounding DINO + SAM
+
+data:
+  dataset_name: 'scannet200'
+  split_path: './dataset/scannetv2_val.txt'
+  datapath: './data/scannet200/val'  # RGB-D + pose path
+  gt_path: './data/scannet200/val/groundtruth'  # gt path
+  original_ply: './data/scannet200/val/original_ply_files'  # raw pcl
+  spp_path: './data/scannet200/val/superpoints'  # spp path
+  dc_features_path: './data/scannet200/val/dc_features'  # spp feature path
+
+  img_dim: [640, 480]  # image dimensions for processing
+  rgb_img_dim: [1296, 968]  # original RGB image dimensions
+  cut_num_pixel_boundary: 10
+  img_interval: 2  # frame sampling interval
+  num_classes: 198
+
+cluster:
+  visi: 0.9  # visibility threshold
+  recall: 0.9  # recall threshold
+  simi: 0.9  # similarity threshold
+  point_visi: 0.2
+  valid_points: 50
+
+
+final_instance:
+  spp_level: growspp  # superpoint usage strategy (spp, grow, growspp)
+  duplicate: True
+  iou_overlap: 0.9
+  top_k: 300
+  scale_semantic_score: 300.0
+
+exp:
+  exp_name: "sgs3d_scannet200"
+  mask2d_output: 'mask2d_sgs3d'  # 2D mask output directory
+  grounded_feat_output: 'grounded_feat_sgs3d'  # first stage feature output
+  refined_grounded_feat_output: 'refined_grounded_feat_sgs3d'  # second stage feature output
+  clustering_3d_output: 'clustering_3d_sgs3d'  # 3D clustering output
+  final_output: 'final_result_sgs3d'  # final instance output
+  save_dir: './output/sgs3d_results'
+
+proposals:
+  p2d: True  # use 2D proposals
+  p3d: False  # use 3D proposals (disabled for SGS-3D)
+  agnostic: True  # class-agnostic mode for SGS-3D
+  refined: True  # use refined features
+  dc_feat_not_geo_feat: True
+
+evaluate:
+  evalvocab: False  # vocabulary evaluation
+  evalagnostic: True  # class-agnostic evaluation
+
+agglomerative:
+  hierarchical: True
+  sequential: False
+
+mask:
+  mask_visible_threshold: 0.3
+  undersegment_filter_threshold: 0.3
+  view_consensus_threshold: 0.9
+  contained_threshold: 0.8
+  point_filter_threshold: 0.5
+  min_area: 400  # minimum mask area
+  max_area_ratio: 0.8  # maximum mask area ratio
+  debug: False
+
+fp16: True  # use mixed precision
