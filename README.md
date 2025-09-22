@@ -209,7 +209,7 @@ We provide complete SGS-3D results for all 312 ScanNet200 validation scenes for 
    - Contains: 312 `.pth` files with ground truth annotations
 
 2. **SGS-3D Results** (Our method's predictions)
-   - Download: [scannet200_312_scenes.zip](https://gofile.io/d/xhX1eX)
+   - Download: [scannet200_312_scenes_results.zip](https://gofile.io/d/FBTktc)
    - Extract to: `results/scannet200_312_scenes/`
    - Contains: 312 `.pth` files with our predictions
 
